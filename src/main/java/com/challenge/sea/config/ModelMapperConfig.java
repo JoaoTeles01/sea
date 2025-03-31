@@ -13,15 +13,6 @@ public class ModelMapperConfig {
 
     @Bean
     public ModelMapper modelMapper() {
-        ModelMapper modelMapper = new ModelMapper();
-
-        TypeMap<AdoptionDTO, Adoption> typeMap = modelMapper.createTypeMap(AdoptionDTO.class, Adoption.class);
-        typeMap.addMappings(mapper ->{
-            mapper.map(AdoptionDTO::getAnimalId, Adoption::setId);
-        });
-
-        Adoption adoption = modelMapper.map(adoptionDTO, Adoption.class);
-
         return new ModelMapper();
     }
 }

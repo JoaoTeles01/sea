@@ -1,7 +1,9 @@
 package com.challenge.sea.controller;
 
 import com.challenge.sea.dto.AdoptionDTO;
+import com.challenge.sea.entity.Adoption;
 import com.challenge.sea.service.AdoptionService;
+import com.challenge.sea.utils.AdoptionConverter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/adoption")
+@RequestMapping("/api/adoption")
 public class AdoptionController {
 
     private final AdoptionService adoptionService;
@@ -20,8 +22,9 @@ public class AdoptionController {
 
     @PostMapping
     public ResponseEntity<AdoptionDTO> createAdoption(@RequestBody AdoptionDTO adoptionDTO) {
-        AdoptionDTO createdAdoption = adoptionService.createAdoption(adoptionDTO);
-        return new ResponseEntity<>(createdAdoption, HttpStatus.CREATED);
+        Adoption createdAdoption = adoptionService.createAdoption(adoptionDTO);
+        AdoptionDTO dto = AdoptionConverter.convertDTO(createdAdoption);
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
     @GetMapping
