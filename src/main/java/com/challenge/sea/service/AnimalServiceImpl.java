@@ -23,6 +23,7 @@ public class AnimalServiceImpl implements AnimalService {
     @Override
     public AnimalDTO createAnimal(AnimalDTO animalDTO) {
         Animal animal = animalMapper.map(animalDTO, Animal.class);
+        animal.setStatus("AVAILABLE");
         Animal savedAnimal = animalRepository.save(animal);
         return animalMapper.map(savedAnimal, AnimalDTO.class);
     }
@@ -58,12 +59,4 @@ public class AnimalServiceImpl implements AnimalService {
         animalRepository.delete(animal);
     }
 
-    @Override
-    public AnimalDTO markAsAdopted(Long id) {
-        Animal animal = animalRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Animal not found"));
-        animal.setStatus("ADOPTED");
-        Animal updatedAnimal = animalRepository.save(animal);
-        return animalMapper.map(updatedAnimal, AnimalDTO.class);
-    }
 }

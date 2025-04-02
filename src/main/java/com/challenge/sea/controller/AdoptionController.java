@@ -41,14 +41,21 @@ public class AdoptionController {
 
     @PutMapping("/{id}")
     public ResponseEntity<AdoptionDTO> updateAdoption(@PathVariable Long id, @RequestBody AdoptionDTO adoptionDTO) {
-        AdoptionDTO updatedAdoption = adoptionService.updateAdoption(id, adoptionDTO);
-        return new ResponseEntity<>(updatedAdoption, HttpStatus.OK);
+        Adoption updatedAdoption = adoptionService.updateAdoption(id, adoptionDTO);
+        AdoptionDTO dto = AdoptionConverter.convertDTO(updatedAdoption);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAdoption(@PathVariable Long id) {
-        adoptionService.deleteAdoption(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @GetMapping("/adopter/{adopterId}")
+    public ResponseEntity<List<AdoptionDTO>> getAdoptionsByAdopterId(@PathVariable Long adopterId) {
+        List<AdoptionDTO> adoptions = adoptionService.getAdoptionsByAdopterId(adopterId);
+        return new ResponseEntity<>(adoptions, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<Void> cancelAdoption(@PathVariable Long id) {
+        adoptionService.cancelAdoption(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

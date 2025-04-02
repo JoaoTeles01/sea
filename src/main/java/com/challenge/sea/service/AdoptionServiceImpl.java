@@ -4,13 +4,17 @@ import com.challenge.sea.dto.AdoptionDTO;
 import com.challenge.sea.entity.Adopter;
 import com.challenge.sea.entity.Adoption;
 import com.challenge.sea.entity.Animal;
+import com.challenge.sea.exception.AdoptionException;
+import com.challenge.sea.exception.ResourceNotFoundException;
 import com.challenge.sea.repository.AdopterRepository;
 import com.challenge.sea.repository.AdoptionRepository;
 import com.challenge.sea.repository.AnimalRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +37,14 @@ public class AdoptionServiceImpl implements AdoptionService {
         Adoption adoption = new Adoption();
         Animal animal = animalRepository.findById(adoptionDTO.getAnimalId()).orElseThrow(() -> new RuntimeException("Animal not found"));
         Adopter adopter = adopterRepository.findById(adoptionDTO.getAdopterId()).orElseThrow(() -> new RuntimeException("Adopter not found"));
+        if (animal.getStatus().equals("ADOPTED")) {
+            throw new AdoptionException("Animal is already adopted.");
+        }
+        long adoptedCount = adoptionRepository.countByAdopterIdAndDevolutionDateIsNull(animal.getId());
+        if(adoptedCount >= 3) {
+            throw new AdoptionException("Adopter cannot adopt more than 3 animals.");
+        }
+        animal.setStatus("ADOPTED");
         adoption.setAnimal(animal);
         adoption.setAdopter(adopter);
         adoption.setAdoptionDate(adoptionDTO.getAdoptionDate());
@@ -51,23 +63,46 @@ public class AdoptionServiceImpl implements AdoptionService {
     @Override
     public AdoptionDTO getAdoptionById(Long id) {
         Adoption adoption = adoptionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Adoption not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Adoption not found with id: " + id));
         return adoptionMapper.map(adoption, AdoptionDTO.class);
     }
 
     @Override
-    public AdoptionDTO updateAdoption(Long id, AdoptionDTO adoptionDTO) {
-        Adoption adoption = adoptionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Adoption not found"));
-        adoptionMapper.map(adoptionDTO, adoption);
-        Adoption updatedAdoption = adoptionRepository.save(adoption);
-        return adoptionMapper.map(updatedAdoption, AdoptionDTO.class);
+    public Adoption updateAdoption(Long id, AdoptionDTO adoptionDTO) {
+        Optional<Adoption> optionalAdoption = adoptionRepository.findById(id);
+        if (optionalAdoption.isPresent()) {
+            Adoption adoption = optionalAdoption.get();
+            Animal animal = animalRepository.findById(adoptionDTO.getAnimalId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Adoption not found with id: " + id));
+
+            Adopter adopter = adopterRepository.findById(adoptionDTO.getAdopterId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Adoption not found with id: " + id));
+            adoption.setAnimal(animal);
+            adoption.setAdopter(adopter);
+            adoption.setAdoptionDate(adoptionDTO.getAdoptionDate());
+            adoption.setDevolutionDate(adoptionDTO.getDevolutionDate());
+            return adoptionRepository.save(adoption);
+        } else {
+            throw new RuntimeException("Adoption not found");
+        }
     }
 
     @Override
-    public void deleteAdoption(Long id) {
+    public List<AdoptionDTO> getAdoptionsByAdopterId(Long adopterId) {
+        List<Adoption> adoptions = adoptionRepository.findByAdopterId(adopterId);
+        return adoptions.stream()
+                .map(adoption -> adoptionMapper.map(adoption, AdoptionDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void cancelAdoption(Long id) {
         Adoption adoption = adoptionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Adoption not found"));
-        adoptionRepository.delete(adoption);
+                .orElseThrow(() -> new ResourceNotFoundException("Adoption not found"));
+        Animal animal = adoption.getAnimal();
+        animal.setStatus("AVAILABLE");
+        animalRepository.save(animal);
+        adoption.setDevolutionDate(LocalDate.now());
+        adoptionRepository.save(adoption);
     }
 }

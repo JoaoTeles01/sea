@@ -48,9 +48,4 @@ public class AnimalController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/{id}/adopt")
-    public ResponseEntity<AnimalDTO> adoptAnimal(@PathVariable Long id) {
-        AnimalDTO adoptedAnimal = animalService.markAsAdopted(id);
-        return new ResponseEntity<>(adoptedAnimal, HttpStatus.OK);
-    }
 }

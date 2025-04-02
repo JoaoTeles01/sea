@@ -10,5 +10,4 @@ public interface AnimalService {
     AnimalDTO getAnimalById(Long id);
     AnimalDTO updateAnimal(Long id, AnimalDTO animalDTO);
     void deleteAnimal(Long id);
-    AnimalDTO markAsAdopted(Long id);
 }

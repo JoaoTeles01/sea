@@ -9,4 +9,5 @@ public class AnimalDTO {
     private String breed;
     private int age;
     private String status;
+
 }

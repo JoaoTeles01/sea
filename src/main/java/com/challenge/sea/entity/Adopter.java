@@ -28,7 +28,7 @@ public class Adopter {
     @Column(nullable = false, length = 255)
     private String address;
 
-    @Column(name = "phone_number", nullable = false, length = 15)
+    @Column(nullable = false, length = 15)
     private String phone_number;
 
 }

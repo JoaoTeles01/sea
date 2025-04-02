@@ -9,6 +9,7 @@ public interface AdoptionService {
     Adoption createAdoption(AdoptionDTO adoptionDTO);
     List<AdoptionDTO> getAllAdoptions();
     AdoptionDTO getAdoptionById(Long id);
-    AdoptionDTO updateAdoption(Long id, AdoptionDTO adoptionDTO);
-    void deleteAdoption(Long id);
+    Adoption updateAdoption(Long id, AdoptionDTO adoptionDTO);
+    List<AdoptionDTO> getAdoptionsByAdopterId(Long adopterId);
+    void cancelAdoption(Long id);
 }
