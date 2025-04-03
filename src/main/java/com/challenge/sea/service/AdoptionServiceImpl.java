@@ -11,6 +11,7 @@ import com.challenge.sea.repository.AdoptionRepository;
 import com.challenge.sea.repository.AnimalRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -49,7 +50,8 @@ public class AdoptionServiceImpl implements AdoptionService {
         adoption.setAdopter(adopter);
         adoption.setAdoptionDate(adoptionDTO.getAdoptionDate());
         adoption.setDevolutionDate(adoptionDTO.getDevolutionDate());
-        return adoptionRepository.save(adoption);
+        Adoption savedAdoption = adoptionRepository.save(adoption);
+        return adoptionMapper.map(savedAdoption, Adoption.class);
     }
 
     @Override

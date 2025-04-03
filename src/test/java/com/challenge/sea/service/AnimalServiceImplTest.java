@@ -35,7 +35,7 @@ public class AnimalServiceImplTest {
     @Test
     public void testCreateAnimal() {
         AnimalDTO animalDTO = new AnimalDTO();
-        animalDTO.setName("Dolphin");
+        animalDTO.setName("Claudio");
         Animal animal = new Animal();
         Animal savedAnimal = new Animal();
         savedAnimal.setId(1L);
