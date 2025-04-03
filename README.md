@@ -9,8 +9,6 @@ Este projeto é uma API para gerenciar adoções de animais. Ele é construído 
 - Java
 - Spring Boot
 - Gradle
-- SQL
-- Kotlin
 
 ## Estrutura do Projeto
 
@@ -21,13 +19,13 @@ Este projeto é uma API para gerenciar adoções de animais. Ele é construído 
 
 ## Endpoints
 
-### Adoções
+### Adotantes
 
-- **POST /api/adoption**: Cria uma nova adoção.
-- **GET /api/adoption**: Retorna todas as adoções.
-- **GET /api/adoption/{id}**: Retorna uma adoção pelo ID.
-- **PUT /api/adoption/{id}**: Atualiza uma adoção pelo ID.
-- **DELETE /api/adoption/{id}**: Deleta uma adoção pelo ID.
+- **POST /api/adopter**: Cria uma nova adoção.
+- **GET /api/adopter**: Retorna todas as adoções.
+- **GET /api/adopter/{id}**: Retorna uma adoção pelo ID.
+- **PUT /api/adopter/{id}**: Atualiza uma adoção pelo ID.
+- **DELETE /api/adopter/{id}**: Deleta uma adoção pelo ID.
 
 ### Animais
 
@@ -38,7 +36,18 @@ Este projeto é uma API para gerenciar adoções de animais. Ele é construído 
 - **DELETE /api/animals/{id}**: Deleta um animal pelo ID.
 - **PUT /api/animals/{id}/adopt**: Marca um animal como adotado.
 
+### Adoções
+
+- **POST /api/adoption**: Cria uma nova adoção.
+- **GET /api/adoption**: Retorna todas as adoções.
+- **GET /api/adoption/{id}**: Retorna uma adoção pelo ID.
+- **PUT /api/adoption/{id}**: Atualiza uma adoção pelo ID.
+- **GET /api/adoption/adopter/{adopterID}**: Retorna todas as adoções por adotante.
+- **PUT /api/adoptions/{id}/cancel**: Canecla adoção realizada.
+
 ## Como Executar
+
+### Usando Gradle
 
 1. Clone o repositório:
     ```sh
@@ -46,12 +55,34 @@ Este projeto é uma API para gerenciar adoções de animais. Ele é construído 
     ```
 2. Navegue até o diretório do projeto:
     ```sh
-    cd sea-adoption-api
+    cd sea\src\main\java\com\challenge\sea
     ```
 3. Execute o projeto usando Gradle:
     ```sh
     ./gradlew bootRun
     ```
+
+### Usando Docker Compose
+
+1. **Requisitos:**
+    * Docker instalado na sua máquina.
+
+2. **Executando o Docker Compose:**
+    * No diretório onde o arquivo `docker-compose.yml` está localizado, execute o seguinte comando:
+
+    ```bash
+    docker-compose up --build
+    ```
+
+    * Este comando irá construir a imagem Docker para a sua aplicação e iniciar os contêineres para a aplicação e o banco de dados.
+    * A aplicação estará disponível em `http://localhost:8080`.
+
+3. **Parando os Contêineres:**
+    * Para parar os contêineres, execute:
+
+    ```bash
+    docker-compose down
+    ```    
 
 ## Contribuição
 
@@ -69,6 +100,8 @@ Este projeto é uma API para gerenciar adoções de animais. Ele é construído 
     git push origin minha-feature
     ```
 5. Abra um Pull Request.
+
+
 
 ## Licença
 
